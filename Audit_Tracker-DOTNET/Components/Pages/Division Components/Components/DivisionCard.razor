@@ -1,8 +1,8 @@
-﻿@using AAP_Inventory_Zone_Tracker.Components.Pages.Division_Components.Components
-@using AAP_Inventory_Zone_Tracker.Components.Pages.Inventory_Components.Components
-@using AAP_SD
+﻿@using Audit_Tracker_Blazor.Components.Pages.Division_Components.Components
+@using Audit_Tracker_Blazor.Components.Pages.Inventory_Components.Components
+@using Main_SD
 @using Models.DB_objects
-@using Services.DB_Services
+@using Audit_Tracker_Blazor.Services.DB_Services
 @inject NavigationManager _navManager
 @inject DB_Services _dbService
 
@@ -56,7 +56,7 @@
 
 @code {
     [Parameter]
-    public AAP_Divisions Division { get; set; }
+    public Divisions Division { get; set; }
     [Parameter]
     public List<Inventory_Records> Records { get; set; }
 

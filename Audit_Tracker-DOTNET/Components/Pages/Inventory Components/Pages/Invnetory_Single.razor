@@ -1,7 +1,7 @@
 ﻿@page "/inventory/{ID}"
-@using AAP_Inventory_Zone_Tracker.Components.Pages.Division_Components.Components
-@using AAP_Inventory_Zone_Tracker.Components.Pages.Inventory_Components.Components
-@using AAP_SD
+@using Audit_Tracker_Blazor.Components.Pages.Division_Components.Components
+@using Audit_Tracker_Blazor.Components.Pages.Inventory_Components.Components
+@using Main_SD
 @using Models.DB_objects
 @using Services.DB_Services
 @inject NavigationManager _navManager
@@ -67,7 +67,7 @@
     public string ID { get; set; }
     Inventories Current_Inv = new();
     List<Inventory_Records> Records = new();
-    List<AAP_Divisions> Divisions = new();
+    List<Divisions> Divisions = new();
 
     SD sd = new();
 

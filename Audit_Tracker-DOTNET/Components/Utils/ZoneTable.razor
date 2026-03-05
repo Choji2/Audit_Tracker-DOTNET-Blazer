@@ -45,7 +45,7 @@
     }
 
 
-    async Task<List<AAP_Divisions>> getAllDivision()
+    async Task<List<Divisions>> getAllDivision()
     {
         var divisons = await _dbService.GetAllDivisions();
         return divisons;
@@ -56,7 +56,7 @@
     {
         int result = 0;
 
-        List<AAP_Divisions> divisons = await getAllDivision();
+        List<Divisions> divisons = await getAllDivision();
         foreach (var div in divisons)
         {
             if (div.Div_Code == code)

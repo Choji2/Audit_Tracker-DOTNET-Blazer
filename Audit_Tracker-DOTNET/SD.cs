@@ -1,4 +1,4 @@
-﻿namespace AAP_SD
+﻿namespace Main_SD
 {
     public class SD
     {

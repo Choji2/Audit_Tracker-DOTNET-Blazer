@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models.DB_objects;
 
-namespace Data.INV_DB
+namespace Audit_Tracker_Blazor.Data.INV_DB
 {
     public class InventoryDbContext : DbContext
     {
@@ -58,7 +58,7 @@ namespace Data.INV_DB
         }
 
 
-        public DbSet<AAP_Divisions> AAP_Divisions { get; set; }
+        public DbSet<Divisions> Divisions { get; set; }
         public DbSet<Div_Zones> Div_Zones { get; set; }
         public DbSet<Inventories> Inventories { get; set; }
         public DbSet<Inventory_Records> inventory_Records { get; set; }

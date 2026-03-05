@@ -1,5 +1,5 @@
-﻿@using AAP_Authentication
-@using AAP_SD
+﻿@using Authentication
+@using Main_SD
 @using Microsoft.AspNetCore.Components.Authorization
 @using Models.DB_objects
 @using Services.DB_Services
@@ -104,9 +104,9 @@
 
 @code {
 
-    AAP_Divisions model;
-    AAP_Divisions selected;
-    List<AAP_Divisions> Divisions = new();
+    Divisions model;
+    Divisions selected;
+    List<Divisions> Divisions = new();
 
     bool add_load = false;
     bool del_loading = false;
@@ -156,7 +156,7 @@
         ToggleOpen();
     }
 
-    async Task ToggleDelete(AAP_Divisions divisiion)
+    async Task ToggleDelete(Divisions divisiion)
     {
         selected = divisiion;
         ToggleOpen();

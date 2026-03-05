@@ -10,7 +10,7 @@ namespace Models.DB_objects
         [Required] public string Desc { get; set; }
 
         public int DivID { get; set; }
-        public AAP_Divisions? Div { get; set; } = null;
+        public Divisions? Div { get; set; } = null;
 
 
 

@@ -2,7 +2,7 @@
 
 namespace Models.DB_objects
 {
-    public class AAP_Divisions
+    public class Divisions
     {
 
         [Key]public int ID { get; set; }

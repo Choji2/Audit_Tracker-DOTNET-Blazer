@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AAP_Authentication
+namespace Authentication
 {
     public class Roles
     {

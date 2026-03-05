@@ -1,7 +1,7 @@
-﻿using AAP_Authentication;
+﻿using Authentication;
 using Microsoft.EntityFrameworkCore;
 
-namespace Data.INV_DB
+namespace Audit_Tracker_Blazor.Data.INV_DB
 {
     public class AuthenticationContext : DbContext
     {

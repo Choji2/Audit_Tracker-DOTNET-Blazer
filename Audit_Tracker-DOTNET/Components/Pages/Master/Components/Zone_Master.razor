@@ -1,5 +1,5 @@
-﻿@using AAP_Authentication
-@using AAP_SD
+﻿@using Authentication
+@using Main_SD
 @using Microsoft.AspNetCore.Components.Authorization
 @using Models.DB_objects
 @using Services.DB_Services
@@ -127,7 +127,7 @@
     Div_Zones model;
     Div_Zones selected;
 
-    List<AAP_Divisions> Divisions = new();
+    List<Divisions> Divisions = new();
     List<Div_Zones> Zones = new();
     bool add_load = false;
     bool del_loading = false;

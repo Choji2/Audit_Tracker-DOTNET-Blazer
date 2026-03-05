@@ -1,9 +1,9 @@
-﻿using AAP_SD;
+﻿using Main_SD;
 using Microsoft.AspNetCore.Components.Authorization;
-using Services.DB_Services;
+using Audit_Tracker_Blazor.Services.DB_Services;
 using System.Security.Claims;
 
-namespace AAP_Authentication
+namespace Authentication
 {
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
 

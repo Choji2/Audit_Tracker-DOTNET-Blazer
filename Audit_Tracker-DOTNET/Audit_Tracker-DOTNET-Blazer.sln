@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36930.0 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audit_Tracker-DOTNET_Blazor", "Audit_Tracker-DOTNET_Blazor.csproj", "{6288B031-1479-9624-3D45-C039337BAD3D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6288B031-1479-9624-3D45-C039337BAD3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6288B031-1479-9624-3D45-C039337BAD3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6288B031-1479-9624-3D45-C039337BAD3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6288B031-1479-9624-3D45-C039337BAD3D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {877D3238-4D0B-456D-9865-C1C16C5C1EEA}
+	EndGlobalSection
+EndGlobal

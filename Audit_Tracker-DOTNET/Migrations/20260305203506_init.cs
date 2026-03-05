@@ -4,7 +4,7 @@ using MySql.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace AAPInventoryZoneTracker.Migrations
+namespace Audit_Tracker_Blazor.Migrations
 {
     /// <inheritdoc />
     public partial class init : Migration

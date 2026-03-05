@@ -1,6 +1,6 @@
 ﻿@page "/records/{Current_inv}/{div_id}"
-@using AAP_Inventory_Zone_Tracker.Components.Pages.Record_Components.Components
-@using AAP_SD
+@using Audit_Tracker_Blazor.Components.Pages.Record_Components.Components
+@using Main_SD
 @using Microsoft.AspNetCore.Components.Authorization
 @using Models.DB_objects
 @using System.Diagnostics
@@ -77,7 +77,7 @@
     private System.Threading.Timer? timer;
 
     SD sd = new();
-    public AAP_Divisions Division = new();
+    public Divisions Division = new();
     public Inventories Inventory = new();
     public List<Inventory_Records>? InvRecords = new();
     public List<Inventory_Records>? DivRecords = new();

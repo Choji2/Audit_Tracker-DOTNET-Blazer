@@ -1,7 +1,7 @@
-﻿using AAP_Inventory_Zone_Tracker.Components.Pages.Division_Components;
+﻿using Audit_Tracker_Blazor.Components.Pages.Division_Components;
 using System.ComponentModel.DataAnnotations;
 
-namespace AAP_Authentication
+namespace Authentication
 {
     public class Audit_Admins
     {

@@ -1,13 +1,16 @@
-using AAP_Authentication;
-using AAP_Inventory_Zone_Tracker.Components;
-using Data.INV_DB;
+using Authentication;
+using Audit_Tracker_Blazor.Components;
+using Audit_Tracker_Blazor;
+using Audit_Tracker_Blazor.Data.INV_DB;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Server.IISIntegration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
-using Services.DB_Services;
-using VQDotSticker_Blazor8.Services.Authentication;
+using Audit_Tracker_Blazor.Services.DB_Services;
+using Audit_Tracker_Blazor.Services.Authentication;
+using Authentication;
+
 
 
 
@@ -27,7 +30,7 @@ builder.Services.AddSingleton<Admin_Services>();
 builder.Services.AddAuthentication(IISDefaults.AuthenticationScheme);
 builder.Services.AddAuthorization(options =>
 {
-    AAP_Authorize_Policy.AddCustomPolicies(options); // Policy for Authorization to Site and actions.
+    Authorize_Policy.AddCustomPolicies(options); // Policy for Authorization to Site and actions.
 });
 
 builder.Services.AddHttpContextAccessor();

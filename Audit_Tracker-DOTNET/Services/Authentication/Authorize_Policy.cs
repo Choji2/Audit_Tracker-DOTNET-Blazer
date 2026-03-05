@@ -1,11 +1,11 @@
-﻿using AAP_SD;
+﻿using Main_SD;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using System.Security.Principal;
 
-namespace VQDotSticker_Blazor8.Services.Authentication;
+namespace Audit_Tracker_Blazor.Services.Authentication;
 
-public class AAP_Authorize_Policy
+public class Authorize_Policy
 {
     public static void AddCustomPolicies(AuthorizationOptions options)
     {

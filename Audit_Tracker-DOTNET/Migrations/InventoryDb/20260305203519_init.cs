@@ -4,10 +4,10 @@ using MySql.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace AAPInventoryZoneTracker.Migrations
+namespace Audit_Tracker_Blazor.Migrations.InventoryDb
 {
     /// <inheritdoc />
-    public partial class reorg5 : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,7 +16,7 @@ namespace AAPInventoryZoneTracker.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "AAP_Divisions",
+                name: "Divisions",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
@@ -28,7 +28,7 @@ namespace AAPInventoryZoneTracker.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AAP_Divisions", x => x.ID);
+                    table.PrimaryKey("PK_Divisions", x => x.ID);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -63,9 +63,9 @@ namespace AAPInventoryZoneTracker.Migrations
                 {
                     table.PrimaryKey("PK_Div_Zones", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Div_Zones_AAP_Divisions_DivID",
+                        name: "FK_Div_Zones_Divisions_DivID",
                         column: x => x.DivID,
-                        principalTable: "AAP_Divisions",
+                        principalTable: "Divisions",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -115,7 +115,7 @@ namespace AAPInventoryZoneTracker.Migrations
                 name: "inventory_Records");
 
             migrationBuilder.DropTable(
-                name: "AAP_Divisions");
+                name: "Divisions");
 
             migrationBuilder.DropTable(
                 name: "Inventories");

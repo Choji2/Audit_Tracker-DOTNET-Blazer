@@ -1,9 +1,9 @@
-﻿using AAP_Authentication;
-using Data.INV_DB;
+﻿using Authentication;
+using Audit_Tracker_Blazor.Data.INV_DB;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace Services.DB_Services
+namespace Audit_Tracker_Blazor.Services.DB_Services
 {
     public class Admin_Services
     {

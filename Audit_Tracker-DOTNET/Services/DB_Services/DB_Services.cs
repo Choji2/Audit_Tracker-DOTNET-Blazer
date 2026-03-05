@@ -1,4 +1,4 @@
-﻿using Data.INV_DB;
+﻿using Audit_Tracker_Blazor.Data.INV_DB;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -7,7 +7,7 @@ using Models.DB_objects;
 using Models.System;
 using MudBlazor;
 
-namespace Services.DB_Services
+namespace Audit_Tracker_Blazor.Services.DB_Services
 {
     public class DB_Services
     {
@@ -26,20 +26,20 @@ namespace Services.DB_Services
 
         #region Division CRUD
         //Retrieve
-        public async Task<List<AAP_Divisions>> GetAllDivisions()
+        public async Task<List<Divisions>> GetAllDivisions()
         {
             var context = await _dbcontext.CreateDbContextAsync();
 
-            return await context.AAP_Divisions.ToListAsync();
+            return await context.Divisions.ToListAsync();
         }
-        public async Task<AAP_Divisions> GetSingleDivision(int id)
+        public async Task<Divisions> GetSingleDivision(int id)
         {
             var context = await _dbcontext.CreateDbContextAsync();
-            return await context.AAP_Divisions.SingleOrDefaultAsync(x => x.ID == id);
+            return await context.Divisions.SingleOrDefaultAsync(x => x.ID == id);
 
         }
         //Update
-        public async Task UpdateDivision(AAP_Divisions new_Division)
+        public async Task UpdateDivision(Divisions new_Division)
         {
             var context = await _dbcontext.CreateDbContextAsync();
             var old_division = await GetSingleDivision(new_Division.ID);
@@ -47,18 +47,18 @@ namespace Services.DB_Services
             old_division.Div_Code = new_Division.Div_Code;
             old_division.Desc = new_Division.Desc;
 
-            context.AAP_Divisions.Update(old_division);
+            context.Divisions.Update(old_division);
             context.SaveChanges();
 
         }
         //Create
-        public async Task<bool> DivisionCreation(AAP_Divisions new_division)
+        public async Task<bool> DivisionCreation(Divisions new_division)
         {          
             try
             {
                 new_division.Div_Code = new_division.Div_Code.ToUpper();
                 var context = await _dbcontext.CreateDbContextAsync();
-                context.AAP_Divisions.Add(new_division);
+                context.Divisions.Add(new_division);
                 context.SaveChanges();
                 return true;
             }
@@ -69,14 +69,14 @@ namespace Services.DB_Services
             }
         }
         //Delete
-        public async Task<bool> DivisionDelete(AAP_Divisions current_division)
+        public async Task<bool> DivisionDelete(Divisions current_division)
         {
             try
             {
                 var context = await _dbcontext.CreateDbContextAsync();
                 var old_division = await GetSingleDivision(current_division.ID);
 
-                context.AAP_Divisions.Remove(old_division);
+                context.Divisions.Remove(old_division);
                 context.SaveChanges();
                 return true;
             }
@@ -285,7 +285,7 @@ namespace Services.DB_Services
             Random rnd = new Random();
 
             Int32 unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(2010, 1, 1)).TotalSeconds;
-            return $"AAP_INV{rnd.NextDouble()}{rnd.Next(5000)}{unixTimestamp.ToString()}{DateTime.Now.Microsecond}{DateTime.Now.Day}{DateTime.Now.Month}{DateTime.Now.Year}";
+            return $"INV{rnd.NextDouble()}{rnd.Next(5000)}{unixTimestamp.ToString()}{DateTime.Now.Microsecond}{DateTime.Now.Day}{DateTime.Now.Month}{DateTime.Now.Year}";
         }
 
 
