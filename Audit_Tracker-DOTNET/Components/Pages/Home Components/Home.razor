@@ -1,0 +1,34 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@using AAP_Inventory_Zone_Tracker.Components.Pages.Inventory_Components.Pages
+@using AAP_Inventory_Zone_Tracker.Components.Utils
+@using Services.DB_Services
+@inject DB_Services DB_Service
+
+
+<div style="background-color:white;position:fixed;z-index:2;width:100%">
+    <br />
+    <br />
+    <MudText Typo="Typo.caption" Class="mt-2">Select Audit from List</MudText>
+
+</div>
+<div style="z-index:0">
+    <br />
+    <br />
+    <br />
+    <br />
+    <Inventory_Main />
+</div>
+
+@code {
+    public string Text { get; set; } = "????";
+    public string ButtonText { get; set; } = "Click Me";
+    public int ButtonClicked { get; set; }
+
+    void ButtonOnClick()
+    {
+        ButtonClicked += 1;
+        Text = $"Awesome x {ButtonClicked}";
+        ButtonText = "Click Me Again";
+    }
+    }

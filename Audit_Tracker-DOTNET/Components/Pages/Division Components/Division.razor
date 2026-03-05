@@ -1,0 +1,25 @@
+﻿@page "/division"
+@page "/division/{division_code}"
+@rendermode InteractiveServer
+@using AAP_Inventory_Zone_Tracker.Components.Utils
+
+
+
+<div>
+    <ZoneTable Div_Code="@division_code">
+
+    </ZoneTable>
+
+</div>
+
+
+
+
+
+@code {
+    [Parameter]
+    public string division_code { get; set; }
+
+
+
+}

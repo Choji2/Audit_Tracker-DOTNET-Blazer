@@ -1,0 +1,39 @@
+﻿@using Models.DB_objects
+@using Models.DB_objects
+@using Services.DB_Services
+@inject DB_Services _dbService
+
+@foreach(var division in Divisions){
+
+    <MudText Typo="Typo.h6"> @division.Div_Code </MudText>
+    <MudText Typo="Typo.caption">| ID: @division.ID</MudText>
+    <Layer_3 Division_ID="division.ID" INV_ID="@Inv_ID"/>
+   
+}
+
+@code {
+
+
+    [Parameter]
+    public List<AAP_Divisions> Divisions { get; set; }
+    [Parameter]
+    public string Inv_ID { get; set; }
+    List<Inventory_Records> Records = new();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await SetVariables();
+
+
+    }
+
+    public async Task SetVariables()
+    {     
+        StateHasChanged();
+    }
+
+
+}

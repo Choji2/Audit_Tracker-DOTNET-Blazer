@@ -1,0 +1,81 @@
+﻿@using Models.DB_objects    
+@using Services.DB_Services
+@using System.Diagnostics
+@rendermode InteractiveServer
+@inject DB_Services _dbService
+
+
+
+
+<h3>ZoneTable @Div_Code</h3>
+<button @onclick=Refresh>click me
+
+</button>
+
+<h2>@Div_Id</h2>
+<MudDataGrid Items="@zones">
+    <Columns>
+        <PropertyColumn Property="x => x.ZoneID" Title="Nr" />
+        <PropertyColumn Property="x => x.Status" />
+    </Columns>
+</MudDataGrid>
+
+
+
+
+@code {
+    [Parameter]
+    public string Div_Code{ get; set; }
+    public int Div_Id = 0;
+    public List<Inventory_Records> zones = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        Div_Id = await getDivIdfromDivCode(Div_Code);
+
+        List<Inventory_Records> records = new();
+
+
+        //this needs fixed
+        //records = await _dbService.GetRecordsByInventory(1);
+
+        //zones = await _dbService.GetRecordsByInventoryPerDivision(records, Div_Id);
+
+    }
+
+
+    async Task<List<AAP_Divisions>> getAllDivision()
+    {
+        var divisons = await _dbService.GetAllDivisions();
+        return divisons;
+
+    } 
+
+    async Task<int> getDivIdfromDivCode(string code)
+    {
+        int result = 0;
+
+        List<AAP_Divisions> divisons = await getAllDivision();
+        foreach (var div in divisons)
+        {
+            if (div.Div_Code == code)
+            {
+                result = div.ID;
+                return result;
+
+            }
+        }
+
+        return result;
+    }
+
+    async Task Refresh()
+    {
+        Div_Id = await getDivIdfromDivCode(Div_Code);
+
+    }
+
+
+
+}

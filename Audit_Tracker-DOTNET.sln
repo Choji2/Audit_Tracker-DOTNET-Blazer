@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audit_Tracker-DOTNET-Blazor", "..\AAP-Inventory-Zone-Tracker\AAP-Inventory-Zone-Tracker\Audit_Tracker-DOTNET-Blazor.csproj", "{4D42A087-B5DD-3B8C-5E8B-3173C3AC3C2D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4D42A087-B5DD-3B8C-5E8B-3173C3AC3C2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D42A087-B5DD-3B8C-5E8B-3173C3AC3C2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D42A087-B5DD-3B8C-5E8B-3173C3AC3C2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D42A087-B5DD-3B8C-5E8B-3173C3AC3C2D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8C189F10-89B5-4FF8-920E-8AF74DCE314E}
+	EndGlobalSection
+EndGlobal

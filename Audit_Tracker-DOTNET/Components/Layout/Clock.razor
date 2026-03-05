@@ -1,0 +1,31 @@
+﻿
+@using System.Timers
+
+<MudText Color="Color.Info" Typo="Typo.caption">@currentDateTime</MudText>
+
+@code {
+    private string currentDateTime;
+    private Timer timer;
+
+    protected override void OnInitialized()
+    {
+        currentDateTime = DateTime.Now.ToString("F");
+        timer = new Timer(1000); // Set the timer to tick every second
+        timer.Elapsed += UpdateDateTime;
+        timer.Start();
+    }
+
+    private void UpdateDateTime(object sender, ElapsedEventArgs e)
+    {
+        InvokeAsync(() =>
+        {
+            currentDateTime = DateTime.Now.ToString("F");
+            StateHasChanged();
+        });
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
+    }
+}

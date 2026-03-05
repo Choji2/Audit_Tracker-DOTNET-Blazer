@@ -1,0 +1,127 @@
+﻿@page "/records/{Current_inv}/{div_id}"
+@using AAP_Inventory_Zone_Tracker.Components.Pages.Record_Components.Components
+@using AAP_SD
+@using Microsoft.AspNetCore.Components.Authorization
+@using Models.DB_objects
+@using System.Diagnostics
+@using Services.DB_Services
+@inject DB_Services _dbService
+
+
+
+@if (loading){
+    <MudProgressLinear Color="Color.Dark" Striped="true" Rounded="true" Value="100" Class="my-7" Size="Size.Medium" />
+}else{
+
+    if(Current_inv!=null){
+
+        <MudGrid Class="mt-2">
+
+            <MudItem lg="2">
+                <MudText Class="mt-2">Department: </MudText>
+                <MudText Color="Color.Secondary" Typo="Typo.h2">
+                    @Division.Desc
+
+                    <MudText Typo="Typo.subtitle1">@Inventory.desc</MudText>
+
+                </MudText>
+
+                <MudDivider />
+                <MudBreadcrumbs Items="_items"></MudBreadcrumbs>
+            </MudItem>
+            <MudItem lg="10" >
+                 <MudPaper Elevation="0" Outlined="false" Class="px-3 py-3" style="height:750px;width:100%;overflow-y:scroll">
+
+                    <MudPaper Elevation="0">
+                        <MudGrid Spacing="10" Justify="Justify.Center">
+                            <AuthorizeView Policy="@SD.Auditor">
+                                <Authorized>
+                                    @foreach (var record in DivRecords.OrderBy(x => checkZoneCode(x.ZoneID)))
+                                    {
+                                        <MudItem sm="3">
+                                            <RecordsCard record="record" Zones="Zones" Auditor="true" />
+                                        </MudItem>
+                                    }
+                                </Authorized>
+                                <NotAuthorized>
+                                    @foreach (var record in DivRecords)
+                                    {
+                                        <MudItem sm="3">
+                                            <RecordsCard record="record" Zones="Zones" Auditor="false" />
+                                        </MudItem>
+                                    }
+                                </NotAuthorized>
+                            </AuthorizeView>
+                        </MudGrid>
+
+                    </MudPaper>
+
+                 </MudPaper>              
+            </MudItem>
+        </MudGrid>
+   }else{
+       <MudText Typo="Typo.h3"> 
+           No Record to show.
+       </MudText>
+   }
+}
+
+
+@code {
+    [Parameter]
+    public string Current_inv{ get;set;}
+
+    [Parameter]
+    public string div_id{ get;set;}
+    
+    private System.Threading.Timer? timer;
+
+    SD sd = new();
+    public AAP_Divisions Division = new();
+    public Inventories Inventory = new();
+    public List<Inventory_Records>? InvRecords = new();
+    public List<Inventory_Records>? DivRecords = new();
+    public List<Div_Zones>? Zones = new();
+
+    private List<BreadcrumbItem> _items = new();
+
+    public bool loading = true;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+        StateHasChanged();
+        await Task.Delay(1000);
+        await SetVariables();
+
+        _items =
+        [
+            new("Home", href: "#"),
+            new($"{Inventory.desc}", href: $"inventory/{Inventory.ID}"),
+            new($"{Division.Desc}",  href: null, disabled: true),
+        ];
+
+        loading = false;
+        StateHasChanged();
+
+        
+    }
+
+    public async Task SetVariables()
+    {
+        Zones = await _dbService.GetAllZones();
+        Inventory = await _dbService.GetSingleInventory(Current_inv);
+        Division = await _dbService.GetSingleDivision(int.Parse(div_id));
+        InvRecords = await _dbService.GetRecordsByInventory(Inventory.ID);
+        DivRecords = await _dbService.GetRecordsByInventoryPerDivision(InvRecords, int.Parse(div_id));
+    }
+  
+    public string checkZoneCode(int input)
+    {
+        var temp = Zones.Where(x => x.ID == input);
+        return temp.First().Zone_Code;
+
+
+    }
+}

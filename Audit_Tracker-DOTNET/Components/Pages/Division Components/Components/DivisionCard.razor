@@ -1,0 +1,135 @@
+﻿@using AAP_Inventory_Zone_Tracker.Components.Pages.Division_Components.Components
+@using AAP_Inventory_Zone_Tracker.Components.Pages.Inventory_Components.Components
+@using AAP_SD
+@using Models.DB_objects
+@using Services.DB_Services
+@inject NavigationManager _navManager
+@inject DB_Services _dbService
+
+
+@if(loading){
+    <MudSkeleton />
+    <MudSkeleton SkeletonType="SkeletonType.Circle" Width="50px" Height="50px" />
+    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="200px" Height="110px" />
+}else{
+    <MudCard Outlined=" true">
+        <MudCardContent>
+            <MudText Typo="Typo.h5">@Division.Desc</MudText>
+        </MudCardContent>
+
+        @if (Division_Records.Count() == 0)
+        {
+            <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+                <MudText> No Records </MudText>
+            </MudContainer>
+        }else{
+            <MudChart ChartType="ChartType.Donut" Width="200px" Height="200px" InputData="@data" InputLabels="@sd.labels" ChartOptions="@options">
+                <CustomGraphics >
+   
+                        <text class="donut-inner-text" x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Records</text>
+                        <text class="donut-inner-text" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="5">@total</text>
+                    
+                </CustomGraphics>
+            </MudChart>
+        }
+
+        <MudCardActions>
+           @if(loading_mini){
+                <MudProgressLinear Color="Color.Dark" Striped="true" Rounded="true" Value="100" Class="my-7" Size="Size.Medium" />
+            }
+            else
+            {
+                if (Division_Records.Count != 0)
+                {
+                    <MudButton Disabled="false" FullWidth="true" Variant="Variant.Filled" Color="Color.Inherit" @onclick='() => Navigate(Division_Records, $"{Division.ID}")'>view</MudButton>
+                }
+                else
+                {
+                    <MudButton Disabled="true" FullWidth="true" Variant="Variant.Filled" Color="Color.Primary">view</MudButton>
+                }
+            }
+        </MudCardActions>
+
+    </MudCard>
+}
+
+
+@code {
+    [Parameter]
+    public AAP_Divisions Division { get; set; }
+    [Parameter]
+    public List<Inventory_Records> Records { get; set; }
+
+    public List<Inventory_Records> Division_Records { get; set; }
+
+    bool loading = true;
+    bool loading_mini = false;
+
+    SD sd = new();
+    public double[] data = { 0, 0, 0};
+    int total = 0;
+
+    private System.Threading.Timer? timer;
+
+
+    ChartOptions options = new ChartOptions
+    {
+            ChartPalette = new string[] { "#7e7e7e", "#33FF57", "#3357FF", "#FF33A1" } // Define your custom colors here
+    };
+
+
+
+    protected override async Task OnInitializedAsync() // This runs before the page is rendered
+    {
+        
+        Division_Records = await RecordReturn();
+        loading = false;
+        await Task.Delay(400);
+        StateHasChanged();    
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await SetVariables(true);
+    }
+
+
+    public async Task SetVariables(bool val)
+    {
+
+        
+        if(val)
+        {
+            loading_mini = true;
+            await InvokeAsync(StateHasChanged);
+        }
+        await Task.Delay(1000);
+        Division_Records = await RecordReturn();
+        total = Division_Records.Count();
+
+        data = new double[] { Division_Records.Where(x => x.Status == sd.statuses[0].code).ToList().Count(), Division_Records.Where(x => x.Status == sd.statuses[1].code).ToList().Count(), Division_Records.Where(x => x.Status == sd.statuses[2].code).ToList().Count() };
+        await Task.Delay(500);
+        if(val){
+
+            loading_mini = false;
+            await InvokeAsync(StateHasChanged);
+        }
+        
+
+        
+    }
+
+    public async Task<List<Inventory_Records>> RecordReturn()
+    {
+        return await _dbService.GetRecordsByInventoryPerDivision(Records,Division.ID);
+    }
+
+    private async Task Navigate(List<Inventory_Records> records, string DIV_ID){
+        var INV_ID = records.First().INVID;
+        _navManager.NavigateTo($"/records/{INV_ID}/{DIV_ID}");
+    }
+
+
+
+
+}

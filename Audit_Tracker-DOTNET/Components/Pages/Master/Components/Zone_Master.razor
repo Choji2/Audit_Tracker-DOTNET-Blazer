@@ -1,0 +1,192 @@
+﻿@using AAP_Authentication
+@using AAP_SD
+@using Microsoft.AspNetCore.Components.Authorization
+@using Models.DB_objects
+@using Services.DB_Services
+@inject DB_Services _dbService
+
+
+
+<MudGrid>
+
+
+    <MudItem sm="7" >
+        <MudPaper Elevation="0" Outlined="true" Class="px-3 py-3" style="height:750px;overflow-y:scroll">
+            <MudPopover OverflowBehavior="OverflowBehavior.FlipNever" Open="@_open" AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.CenterCenter" Class="pa-4">
+                <MudText Typo="Typo.h6"> Removing Division ID: @selected.ID </MudText>
+                <MudGrid>
+                    @if (del_loading)
+                    {
+                        <MudItem sm="12">
+                            <MudProgressLinear Color="Color.Dark" Striped="true" Rounded="true" Value="100" Class="my-7" Size="Size.Medium" />
+                        </MudItem>
+                    }
+                    else
+                    {
+                        <MudItem sm="6">
+                            <MudButton StartIcon="@Icons.Material.Filled.ArrowLeft" FullWidth="true" Variant="Variant.Filled" Color="Color.Dark" OnClick="@(ToggleOpen)">Exit</MudButton>
+                        </MudItem>
+                        <MudItem sm="6">
+                            <MudButton StartIcon="@Icons.Material.Filled.Delete" FullWidth="true" Variant="Variant.Filled" Color="Color.Info" OnClick="@(DeleteZone)">Delete</MudButton>
+                        </MudItem>
+                    }
+
+
+
+                </MudGrid>
+            </MudPopover>
+            <MudGrid>
+
+                @foreach (var divsion in Divisions.OrderBy(x=>x.Div_Code))
+                {
+
+                    <MudItem sm="6">
+                        
+                        <MudTable Items="@Zones.Where(x=>x.DivID==divsion.ID).ToList()" Outlined="true" Height="250px" FixedHeader="true" Dense="true" Hover="true" Bordered="true" Striped="true" Elevation="0">
+                            <ToolBarContent>
+                                <MudText Typo="Typo.h6">@divsion.Div_Code Zones</MudText>
+                                <MudSpacer />
+                            </ToolBarContent>
+                            <HeaderContent>
+                                <MudTh>ID</MudTh>
+                                <MudTh>Code</MudTh>
+                                <MudTh>DESC</MudTh>
+                                <MudTh></MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd DataLabel="ID">@context.ID</MudTd>
+                                <MudTd DataLabel="Code">@context.Zone_Code</MudTd>
+                                <MudTd DataLabel="Desc">@context.Desc</MudTd>
+
+                                <MudTd> <MudButton StartIcon="@Icons.Material.Filled.Delete" FullWidth="true" Variant="Variant.Filled" Color="Color.Dark" Disabled="false" OnClick="@(()=>DeleteToggle(context).GetAwaiter())">Delete</MudButton></MudTd>
+                            </RowTemplate>
+                        </MudTable>
+
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudPaper>
+    </MudItem>
+    <MudItem sm="5">
+
+        <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <MudGrid>
+                <MudItem xs="12" sm="7">
+                    <MudCard Outlined="true" Elevation="0">
+
+                        <MudCardContent>
+                            <MudTextField Label="Division Code" HelperText="Code for Division"
+                            @bind-Value="model.Zone_Code" For="@(() => model.Zone_Code)" />
+                            <MudTextField Label="Desc" HelperText="About Zone"
+                            @bind-Value="model.Desc" For="@(() => model.Desc)" />
+                            <MudSelect @bind-Value="model.DivID" Label="Select Division"  Placeholder="Please Select Division" AdornmentColor="Color.Dark">
+
+                                @foreach(var division in Divisions){
+                                    <MudSelectItem Value="@division.ID" Disabled="false">@division.Div_Code</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudCardContent>
+
+                        <MudCardActions>
+                            @if(add_load){
+                                <MudProgressLinear Color="Color.Dark" Striped="true" Rounded="true" Value="100" Class="my-7" Size="Size.Medium" />
+                            }
+                            else{
+
+                                <MudButton StartIcon="@Icons.Material.Filled.Add" FullWidth="true" ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Dark" Class="ml-auto">Add</MudButton>
+                            }
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+                <MudItem xs="12" sm="5">
+                    <MudPaper Outlined="true" Elevation="0" Class="pa-4 mud-height-full">
+                        <MudText Color="@Color.Error">
+                            <ValidationSummary />
+                        </MudText>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+
+
+    </MudItem>
+
+
+
+
+
+
+
+</MudGrid>
+
+
+
+@code {
+
+    Div_Zones model;
+    Div_Zones selected;
+
+    List<AAP_Divisions> Divisions = new();
+    List<Div_Zones> Zones = new();
+    bool add_load = false;
+    bool del_loading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await SetVariables();
+
+    }
+
+    private async Task SetVariables()
+    {
+        model = new(); 
+        Divisions = await _dbService.GetAllDivisions();
+        Zones = await _dbService.GetAllZones();
+        model.DivID = Divisions.First().ID;
+        StateHasChanged();
+    }
+
+
+    async Task DeleteZone()
+    {
+        del_loading = true;
+        StateHasChanged();
+        await Task.Delay(1000);
+
+        await _dbService.DeleteZone(selected);
+        del_loading = false;
+        SetVariables();
+        ToggleOpen();
+
+    }
+    async Task DeleteToggle(Div_Zones zone)
+    {
+        selected = zone;
+        ToggleOpen();
+    }
+
+    async Task CreateDivision()
+    {
+        add_load= true;
+        StateHasChanged();
+        await Task.Delay(1000);
+        await _dbService.CreateZone(model);
+        add_load = false;
+        await SetVariables();
+    }
+
+    private async void OnValidSubmit(EditContext context)
+    {
+        await CreateDivision();
+        StateHasChanged();
+    }
+
+    bool _open = false;
+    private void ToggleOpen()
+    {
+        _open = !_open;
+    }
+
+}

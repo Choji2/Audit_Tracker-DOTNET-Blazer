@@ -1,0 +1,75 @@
+﻿@using Models.DB_objects
+@using Models.DB_objects
+@using Services.DB_Services
+@inject DB_Services _dbService
+
+
+@if(RecordsbyDiv.Count()==0){
+    <MudText>No records to show...</MudText>
+}else
+{
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+        @foreach (var record in RecordsbyDiv.OrderBy(x=> x.ID))
+        {
+
+
+            <MudPaper Width="50%" Class="my-2 px-3 py-3">
+                <MudText>Zone:  @(master_zones.SingleOrDefault(x => x.ID == record.ZoneID).Desc)</MudText>
+                <MudText>Status: @record.Status</MudText>
+                <MudText Typo="Typo.caption">
+                    | ID: @record.ID
+                </MudText>
+                <MudButton OnClick="()=>UpdateRecord(record).GetAwaiter()">update Status</MudButton>
+            </MudPaper>
+
+        }
+    </MudContainer>
+}
+
+
+@code {
+    [Parameter]
+    public string INV_ID { get; set; }
+    [Parameter]
+    public int Division_ID { get; set; }
+    List<Inventory_Records> RecordsbyDiv = new();
+    List<Div_Zones> master_zones = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await SetVariables();
+
+
+    }
+
+
+
+    public async Task SetVariables()
+    {
+        master_zones = await _dbService.GetAllZones();
+
+        var Records = await _dbService.GetRecordsByInventory(INV_ID);
+        RecordsbyDiv = await _dbService.GetRecordsByInventoryPerDivision(Records,Division_ID);
+        StateHasChanged();
+    }
+
+
+    public async Task UpdateRecord(Inventory_Records record){
+
+        switch( record.Status){
+            case 0:
+                record.Status = 1;
+                _dbService.UpdateRecord(record);
+                break;
+            case 1:
+                record.Status = 2;
+                _dbService.UpdateRecord(record);
+                break;
+            case 2:
+                break;
+
+        }
+    }
+}

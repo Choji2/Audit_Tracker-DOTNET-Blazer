@@ -1,0 +1,40 @@
+﻿@using AAP_Inventory_Zone_Tracker.Components.Pages.Master.Components
+@using AAP_Inventory_Zone_Tracker.Components.Utils
+@using AAP_SD
+@using Microsoft.AspNetCore.Components.Authorization
+@using Models.DB_objects
+@using Services.DB_Services
+@inject DB_Services _dbService
+@page "/master"
+
+<AuthorizeView Policy="@SD.Master">
+    <Authorized>
+        <MudTabs Color="Color.Dark" Outlined="true" Position="Position.Left" Rounded="true" Border="true"
+                 ApplyEffectsToContainer="true" Class="mt-8" PanelClass="pa-6">
+
+            <MudTabPanel Text="Inventories">
+                <Inventory_Master />
+            </MudTabPanel>
+
+            <MudTabPanel Text="Users">
+                <User_Master />
+            </MudTabPanel>
+
+            <MudTabPanel Text="Divisions">
+                <Division__Master />
+            </MudTabPanel>
+
+            <MudTabPanel Text="Zones">
+                <Zone_Master />
+            </MudTabPanel>
+        </MudTabs>
+    </Authorized>
+    <NotAuthorized>
+        <Unauthorized/>
+    </NotAuthorized>
+
+</AuthorizeView>
+
+@code {
+
+}

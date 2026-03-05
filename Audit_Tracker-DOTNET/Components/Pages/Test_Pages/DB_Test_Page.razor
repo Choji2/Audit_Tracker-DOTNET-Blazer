@@ -1,0 +1,90 @@
+﻿@page "/Test"
+@using Models.DB_objects
+@using Services.DB_Services
+@inject DB_Services _dbService
+
+
+<MudGrid>
+    <MudItem sm="6">
+        @if (Inv_List.Count() == 0)
+        {
+            <MudText>No inventoreies in the DB...</MudText>
+        }
+        else
+        {
+            foreach (var inv in Inv_List)
+            {
+                <MudText Typo="Typo.h2">@inv.desc</MudText>
+                <MudText Typo="Typo.caption">| ID: @inv.ID</MudText>
+                <MudButton OnClick="@(()=>DeleteInventory(inv).GetAwaiter())">Delete</MudButton>
+                <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge"><Layer_2_Test Divisions="DivisionList" Inv_ID="@inv.ID" /></MudContainer>
+            }
+        }
+    </MudItem>
+
+    <MudItem sm="6">
+        <MudButton OnClick="CreateInventory">Add Inventory</MudButton>
+    </MudItem>
+</MudGrid>
+
+
+@code {
+
+
+    List<Inventories> Inv_List = new();
+    List<AAP_Divisions> DivisionList = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await SetVariables();
+
+    }
+
+    private async Task SetVariables()
+    {
+        DivisionList = await _dbService.GetAllDivisions();
+
+        Inv_List = await _dbService.GetAllInventories();
+        StateHasChanged();
+    }
+
+
+    public void WriteSomething(){
+        Console.Write("Hello");
+    }
+
+    async Task CreateInventory(){
+
+        var zones = await _dbService.GetAllZones();
+        List<Inventory_Records> new_records = new();
+        Inventories new_inv = new()
+            {
+                ID = _dbService.IDGenerator(),
+                desc = $"INV {Inv_List.Count() + 1} "
+            };
+
+        foreach(var zone in zones){
+            new_records.Add(
+                new()
+                    {
+                        ID = _dbService.IDGenerator(),
+                        Status = 0,
+                        ZoneID= zone.ID,
+                        INVID = new_inv.ID
+                    }
+            );
+        }
+        new_inv.Records = new_records;
+        var stat = await _dbService.AddInventory(new_inv);
+
+        await SetVariables();
+    }
+
+    async Task DeleteInventory( Inventories inv)
+    {
+        await _dbService.DeleteInventory(inv);
+        SetVariables();
+
+    }
+}

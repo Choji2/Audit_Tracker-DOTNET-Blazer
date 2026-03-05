@@ -1,0 +1,128 @@
+﻿@page "/inventory/{ID}"
+@using AAP_Inventory_Zone_Tracker.Components.Pages.Division_Components.Components
+@using AAP_Inventory_Zone_Tracker.Components.Pages.Inventory_Components.Components
+@using AAP_SD
+@using Models.DB_objects
+@using Services.DB_Services
+@inject NavigationManager _navManager
+@inject DB_Services _dbService
+
+
+
+@if (loading){
+    <MudProgressLinear Color="Color.Dark" Striped="true" Rounded="true" Value="100" Class="my-7" Size="Size.Medium" />
+}else{
+
+    if(Current_Inv!=null){
+        <MudGrid Class="my-2">
+
+            <MudItem lg="2">
+                <MudText Class="mt-2">Audit: </MudText>
+                <MudText Color="Color.Info" Typo="Typo.h2">
+                    @Current_Inv.desc            
+                </MudText>
+                <MudText Typo="Typo.subtitle1">Progress: @(Double.Round(((double)(Records.Where(x => x.Status == sd.statuses[2].code).ToList().Count()) / (Records.Count())) * 100))%</MudText>
+                <MudDivider />
+                <MudBreadcrumbs  Items="_items"></MudBreadcrumbs>
+            </MudItem>
+
+
+
+            <MudItem lg="10">
+                <MudPaper Elevation="0" Outlined="false" Class="px-3 py-3" style="height:750px;width:100%;overflow-y:scroll">
+
+
+                    <MudGrid>
+                        @foreach (var div in Divisions.OrderBy(x=>x.Div_Code))
+                        {
+
+                            <MudItem lg="3">
+                                <DivisionCard Division="div" Records="Records" />
+                            </MudItem>
+                        }
+                    </MudGrid>
+
+                </MudPaper>
+               
+            </MudItem>
+
+        </MudGrid>
+    }else{
+        <MudText Typo="Typo.h3"> 
+            No Record to show.
+        </MudText>
+    }
+
+
+
+
+
+
+}
+
+
+
+@code {
+    [Parameter]
+    public string ID { get; set; }
+    Inventories Current_Inv = new();
+    List<Inventory_Records> Records = new();
+    List<AAP_Divisions> Divisions = new();
+
+    SD sd = new();
+
+    bool loading = true;
+
+    private System.Threading.Timer? timer;
+
+    private List<BreadcrumbItem> _items = new();
+
+
+    protected override async Task OnInitializedAsync() // This runs before the page is rendered
+    {
+        loading = true;
+        await SetVariables();
+        await Task.Delay(500);
+        Current_Inv = await _dbService.GetSingleInventory(ID);
+        Records = await _dbService.GetRecordsByInventory(ID);
+        Divisions = await _dbService.GetAllDivisions();
+        try
+        {
+            _items =
+        [
+            new("Home", href: "#"),
+    new($"{Current_Inv.desc}",  href: null, disabled: true),
+        ];
+        }
+        catch
+        {
+
+        }
+
+
+        loading = false;
+        await SetVariables();
+        
+        if(Current_Inv != null){
+
+            timer = new System.Threading.Timer(async (object? stateInfo) =>
+            {
+                Records = await _dbService.GetRecordsByInventory(ID);
+                await InvokeAsync(StateHasChanged);
+
+            }, new System.Threading.AutoResetEvent(false), 10000, 10000);
+        }
+
+        
+
+
+    }    
+
+    public async Task SetVariables(){
+
+        StateHasChanged();
+    }
+
+ 
+
+}

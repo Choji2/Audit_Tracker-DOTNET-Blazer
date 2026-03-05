@@ -1,0 +1,228 @@
+﻿
+@using AAP_SD
+@using Microsoft.AspNetCore.Components.Authorization
+@using Models.DB_objects
+@using System.Diagnostics
+@using Services.DB_Services
+@inject DB_Services _dbService
+
+
+
+
+<MudCard Class="" Elevation="0" Outlined="true">
+    <MudGrid>
+
+        <MudItem sm="5">
+            <MudCardContent>
+                <MudText Typo="Typo.h5"><b>@Zones.FirstOrDefault(x=>x.ID==record.ZoneID).Zone_Code</b></MudText>
+                <MudText Typo="Typo.body2"><b>@checkZoneDesc(record.ZoneID)</b></MudText>
+                <MudText Color="@checkColor(record.Status)" Typo="Typo.body2">@checkStatus(record.Status)</MudText>
+            </MudCardContent>
+        </MudItem>
+
+        <MudItem sm="6">
+
+            @switch (record.Status)
+            {
+                case 0:
+
+                    <MudTimeline TimelineOrientation="TimelineOrientation.Horizontal">
+                        <MudTimelineItem Elevation="0" Color="checkColor(record.Status)">
+                        </MudTimelineItem>
+                        <MudTimelineItem Elevation="0">
+                        </MudTimelineItem>
+                        <MudTimelineItem Elevation="0">
+                        </MudTimelineItem>
+                    </MudTimeline>
+
+                    break;
+                case 1:
+                    <MudTimeline TimelineOrientation="TimelineOrientation.Horizontal">
+                        <MudTimelineItem Elevation="0">
+                        </MudTimelineItem>
+                        <MudTimelineItem Elevation="0" Color="checkColor(record.Status)">
+                        </MudTimelineItem>
+                        <MudTimelineItem Elevation="0">
+                        </MudTimelineItem>
+                    </MudTimeline>
+                    <MudButton Disabled="@(!Auditor)" StartIcon="@Icons.Material.Filled.ArrowLeft" FullWidth="true" Variant="Variant.Text" Color="Color.Inherit" @onclick="() => UpdateRecordRevert(record).GetAwaiter()"><MudText Typo="Typo.caption">Revert</MudText></MudButton>
+                    break;
+                case 2:
+                    <MudTimeline TimelineOrientation="TimelineOrientation.Horizontal">
+                        <MudTimelineItem Elevation="0">
+                        </MudTimelineItem>
+                        <MudTimelineItem Elevation="0">
+                        </MudTimelineItem>
+                        <MudTimelineItem Elevation="0" Color="checkColor(record.Status)">
+                        </MudTimelineItem>
+                    </MudTimeline>
+                    <MudButton Disabled="@(!Auditor)" StartIcon="@Icons.Material.Filled.ArrowLeft" FullWidth="true" Variant="Variant.Text" Color="Color.Inherit" @onclick="() => UpdateRecordRevert(record).GetAwaiter()"><MudText Typo="Typo.caption">Revert</MudText></MudButton>
+                    break;
+            }
+        </MudItem>
+
+    </MudGrid>
+
+
+    <MudCardActions>
+        <MudPaper Elevation="0" Style="height:50px;width:100%">
+
+            @if (loading)
+            {
+                <MudProgressLinear Color="Color.Dark" Striped="true" Rounded="true" Value="100" Class="my-7" Size="Size.Medium" />
+            }else{
+                @if (record.Status != 2)
+                {
+                    <MudButton Disabled="@(!Auditor)" EndIcon="@Icons.Material.Filled.PlayArrow" FullWidth="true" Variant="Variant.Filled" Color="Color.Inherit" @onclick="() => UpdateRecord(record).GetAwaiter()">
+                        @switch (record.Status)
+                        {
+                            case 0:
+                                <MudText>Ready</MudText>
+                                break;
+
+                            case 1:
+                                <MudText>Complete</MudText>
+                                break;
+                        }
+                    </MudButton>
+                }
+            }      
+        </MudPaper>
+    </MudCardActions>
+
+</MudCard>
+
+@code {
+
+
+    bool loading =false;
+
+    [Parameter]
+    public Inventory_Records record { get; set; }
+    [Parameter]
+    public bool Auditor { get; set; }
+
+    [Parameter]
+    public List<Div_Zones> Zones { get; set; }
+
+    SD sd = new();
+    private System.Threading.Timer? timer;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        timer = new System.Threading.Timer(async _ =>
+       {
+           await SetVariables();
+
+
+       }, new System.Threading.AutoResetEvent(true), 15000, 15000);
+    }
+
+
+    public async Task SetVariables()
+    {
+        loading = true;
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(2000); 
+        var tmp = await _dbService.GetSingleRecord(record.ID);
+        record = tmp;
+        loading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    public async Task UpdateRecord(Inventory_Records record)
+    {
+        loading = true;
+        StateHasChanged();
+        await Task.Delay(1000);
+        switch (record.Status)
+        {
+            case 0:
+                record.Status = 1;
+                await _dbService.UpdateRecord(record);
+                loading = false;
+                await InvokeAsync(StateHasChanged);
+                break;
+            case 1:
+                record.Status = 2;
+                loading = false;
+                await _dbService.UpdateRecord(record);
+                await InvokeAsync(StateHasChanged);
+                break;
+
+
+            default:
+                loading = false;
+                break;
+        }
+
+        
+
+    }
+   
+    public async Task UpdateRecordRevert(Inventory_Records record)
+    {
+        loading = true;
+        StateHasChanged();
+        await Task.Delay(1000);
+        switch (record.Status)
+        {
+            case 1:
+                record.Status = 0;
+                await _dbService.UpdateRecord(record);
+                loading = false;
+                await InvokeAsync(StateHasChanged);
+                break;
+            case 2:
+                record.Status = 1;
+                loading = false;
+                await _dbService.UpdateRecord(record);
+                await InvokeAsync(StateHasChanged);
+                break;
+
+
+            default:
+                loading = false;
+                break;
+        }
+
+
+
+    }
+
+    public MudBlazor.Color checkColor(int input)
+    {
+        MudBlazor.Color color = new();
+        switch (input)
+        {
+            case 0:
+                color = Color.Dark;
+                break;
+
+            case 1:
+                color = Color.Success;
+                break;
+            case 2:
+                color = Color.Info;
+                break;
+        }
+        return color;
+
+
+    }
+    public string checkStatus(int input)
+    {
+        var temp = sd.statuses.Where(x => x.code == input);
+        return temp.First().desc;
+
+    }
+    public string checkZoneDesc(int input)
+    {
+        var temp = Zones.Where(x => x.ID == input);
+        return temp.First().Desc;
+
+
+    }
+}

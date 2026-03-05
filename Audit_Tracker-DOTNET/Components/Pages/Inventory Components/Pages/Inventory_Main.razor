@@ -1,0 +1,93 @@
+﻿
+@using AAP_Inventory_Zone_Tracker.Components.Pages.Inventory_Components.Components
+@using Models.DB_objects
+@using Services.DB_Services
+@inject NavigationManager _navManager
+@inject DB_Services _dbService
+
+
+
+@if(loading)
+{
+    <MudProgressLinear Color="Color.Dark" Striped="true" Rounded="true" Value="100" Class="my-7" Size="Size.Medium" />
+
+}else
+{  
+    @if(Master_Inventory_List.Count()==0){
+
+        <MudText>
+            No Inventories to View
+        </MudText>
+
+    }else{
+        <MudPaper Elevation="0" Outlined="false" Class="px-3 py-3" style="height:750px;width:100%;overflow-y:scroll">
+
+
+            @foreach (var year in yearlist)
+            {
+                <MudText><strong>@year</strong></MudText>
+                <MudDivider />
+                <MudPaper Class="py-3 px-3 mb-3" Outlined="false" Elevation="0">
+
+                    <MudGrid>
+                        @foreach (var inventory in Master_Inventory_List.Where(x => x.ID.Substring(x.ID.Length - 4) == year))
+                        {
+                            <MudItem lg="3">
+                                <MudButton OnClick="@(()=>Navigate(inventory.ID).GetAwaiter())" Variant="Variant.Filled" Color="Color.Surface" Style="text-align:start" DropShadow="true">
+                                    <Inventory_Minor Current_Inv="inventory" />
+                                </MudButton>
+                            </MudItem>
+
+                        }
+                    </MudGrid>
+                </MudPaper>
+
+
+            }
+
+
+        </MudPaper>
+     
+    }
+
+}
+
+
+@code {
+    //This Page will list all the Invs in the Db and their general status
+
+    bool loading = true; // this will hepl give the illusion of loading for end user
+
+    List<Inventories> Master_Inventory_List = new(); //List to hold all Db stored inventories 
+    List<String> yearlist = new();
+
+
+    protected override async Task OnInitializedAsync() // This runs before the page is rendered 
+    {
+
+        await SetVariables();
+
+    }
+
+    private async Task SetVariables() // Most button functions require a call back function, Putting it in a task makes it easy. I'll show you that in other pages. 
+    {
+        await Task.Delay(500);
+        Master_Inventory_List = await _dbService.GetAllInventories();
+        await SetYearList();
+        loading = false; // visual cheese
+        StateHasChanged();
+    }
+
+    private async Task SetYearList(){
+
+        List<string> tmp = new();
+        tmp = Master_Inventory_List.Select(x => x.ID.Substring(x.ID.Length-4)).Distinct().ToList();
+        yearlist = tmp;
+    }
+
+    private async Task Navigate(string ID){
+        _navManager.NavigateTo($"/inventory/{ID}");
+    }
+
+
+}

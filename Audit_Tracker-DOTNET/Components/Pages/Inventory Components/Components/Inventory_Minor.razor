@@ -1,0 +1,47 @@
+﻿@using AAP_SD
+@using Models.DB_objects
+@using Services.DB_Services
+@inject DB_Services _dbService
+@if (loading)
+{
+    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="200px" Height="110px" />
+
+}
+else
+{
+    <MudPaper Style="background-color:transparent;" Elevation="0" Class="p-3">
+
+        <MudText Color="Color.Info" Typo="Typo.h3">@Current_Inv.desc</MudText>
+        <MudDivider/>
+        <MudText Color="Color.Dark" Typo="Typo.h4">@(Double.Round(((double)(Records.Where(x => x.Status == sd.statuses[2].code).ToList().Count()) / (Records.Count())) * 100))% Complete </MudText>
+       
+        
+        <MudText Typo="Typo.caption">@Current_Inv.ID</MudText>
+    </MudPaper>
+
+}
+@code {
+    bool loading = true; // this will hepl give the illusion of loading for end user
+    SD sd = new(); // Standard Dictionary to accces Status List. If the SD property is a const, you dont have to declare a var. 
+
+    [Parameter]
+    public Inventories Current_Inv { get; set; } //List to hold all Db stored inventories
+
+    List<Inventory_Records> Records { get; set; }
+
+    protected override async Task OnInitializedAsync() // This runs before the page is rendered
+    {
+
+        await SetVariables();
+
+    }
+
+    private async Task SetVariables() // Most button functions require a call back function, Putting it in a task makes it easy. I'll show you that in other pages.
+    {
+        loading = true;// visual cheese
+        StateHasChanged();
+        Records = await _dbService.GetRecordsByInventory(Current_Inv.ID);
+        loading = false; // visual cheese
+        StateHasChanged();
+    }
+}
