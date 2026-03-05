@@ -27,7 +27,7 @@
         "S-1-5-21-4127812034-820336945-2256232113-513"//Domain Users
     };
 
-        public const string UserDomain = "AMU\\";
+        public const string UserDomain = "DOM\\";
         public const string Master = "Master";
         public const string Auditor = "Auditor";
 
